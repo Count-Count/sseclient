@@ -80,11 +80,12 @@ class FakeResponse(object):
             content = content.decode("utf-8")
         self.stream = content
         self.headers = headers or None
-        self.raw = io.BytesIO(content.encode())
+        self.raw = content.encode()
     def raise_for_status(self):
         pass
     def iter_content(self, chunk_size=1024):
-        return self.raw
+        for i in range(0, len(self.raw), chunk_size):
+            yield self.raw[i:i+chunk_size]
 
 def join_events(*events):
     """
